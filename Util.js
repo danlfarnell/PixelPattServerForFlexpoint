@@ -10,10 +10,10 @@ var fs = require("fs");
 var fpm = require("./FlexPointMessages");
 var storage = require("node-persist");
 storage.initSync();
-var ss = require("../literals/SystemSettings");
-var cl = require("../literals/CardLanguage");
-var ct = require("../literals/CardType");
-var fpReqType = require("../literals/FpRequestType");
+var ss = require("./literals/SystemSettings");
+var cl = require("./literals/CardLanguage");
+var ct = require("./literals/CardType");
+var fpReqType = require("./literals/FpRequestType");
 
 
 if (process.argv[2] === "noLogging") {

@@ -1,12 +1,12 @@
 ﻿var net = require('net');
 var winston = require('winston');
 var uti = require("./Util");
-var ss = require("./literals/SystemSettings");
+var ss = require("./literals/SystemSettings.js");
 var chokidar = require("chokidar");
 var clientList = [];
 var fpm = require("./FlexPointMessages");
 var clientIp;
-var fpRequestType = require("./../literals/FpRequestType");
+var fpRequestType = require("./literals/FpRequestType");
 var tXml;
 var merchantName = "";
 
