@@ -1,0 +1,21 @@
+2015-09-13T13:12:47.881Z - [32minfo[39m: Server is listening on port #: 9999
+2015-09-13T13:18:13.838Z - [32minfo[39m: Client Connected on Port#: 9999 IP: ::1
+2015-09-13T13:18:13.840Z - [32minfo[39m: Connections: count: 1
+2015-09-13T13:18:19.176Z - [32minfo[39m: Sent Ack message to pin pad
+2015-09-13T13:18:19.181Z - [32minfo[39m: Verified data is received!
+2015-09-13T13:18:19.182Z - [32minfo[39m: Data from Pin pad: 
+
+
+
+2015-09-13T13:18:19.183Z - [32minfo[39m: Bytes read: 1
+2015-09-13T13:18:19.183Z - [32minfo[39m: DataStream Ended
+
+
+2015-09-13T13:18:19.188Z - [32minfo[39m: Special Chars cleaned
+2015-09-13T13:18:19.189Z - [32minfo[39m: undefined
+2015-09-13T13:18:28.281Z - [32minfo[39m: Client Successfully Disconnected
+2015-09-13T13:18:28.281Z - [32minfo[39m: Cleaning up old connection
+2015-09-13T13:20:48.796Z - [32minfo[39m: Client Connected on Port#: 9999 IP: ::1
+2015-09-13T13:20:48.797Z - [32minfo[39m: Connections: count: 2
+2015-09-13T13:20:54.857Z - [32minfo[39m: Client Successfully Disconnected
+2015-09-13T13:20:54.858Z - [32minfo[39m: Cleaning up old connection
