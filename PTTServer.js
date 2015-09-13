@@ -2,13 +2,16 @@
 var winston = require('winston');
 var uti = require("./Util");
 var ss = require("./literals/SystemSettings.js");
-var chokidar = require("chokidar");
 var clientList = [];
 var fpm = require("./FlexPointMessages");
 var clientIp;
-var fpRequestType = require("./literals/FpRequestType");
+var RequestType = require("./literals/RequestType");
 var tXml;
 var merchantName = "";
+var PixelIp = "127.0.0.1";
+var PixelPort = "5656";
+var client = net.connect({port: PixelPort})
+
 
 
 //Catch all errors that occur globally if they are not caught.
@@ -72,144 +75,12 @@ if (uti.licenseIsValid()) {
 ss.incrementRequestIndex(); //Will set to 1 if not set.
 
 
-//Prepare system to watch the maitred int folder.
-var watcher = chokidar.watch(ss.maitredIntPath, {
-    ignored: /BACKUP|\.git/,
-    ignoreInitial: true, persistent: false
-});
-
-watcher.on('add', function (path) {
 
 
-    //Watch for answer files from maitred and send them back to pin pad.
-    if (path.slice(-14, -10) === "Aptt") {
-
-        var deviceID;
-
-
-        uti.readMaitredResponseFile(path)
-            .then(function (data) {
-                return uti.buildObjectFromMDXml(data);
-            })
-            .then(function (xmlObject) {
-
-                //Store the ip so we can send to the correct pin pad.
-                deviceID = xmlObject.deviceID;
-
-                if (xmlObject.errorResponse == true) {
-
-                    if (xmlObject.error === "Table not locked") {
-
-                        logger.info("MD Said Table not locked.  Payment can't be applied.");
-                        return fpm.createTicketBalanceResponseError(xmlObject.error);
-
-                    }
-
-
-                    if (xmlObject.error === "Invoice closed") {
-
-                        logger.info("Invoice is closed. Sending a Zero Balance Answer to Pin pad.");
-                        return fpm.createTicketBalanceResponse("0");
-
-                    } else {
-
-                        logger.info("Creating a Ticket Response Error Answer For Pin Pad");
-                        return fpm.createTicketResponseError(xmlObject.error);
-                    }
-
-
-                }
-                if (xmlObject.invoiceByTableResponse == true) {
-                    logger.info("Creating a Ticket Response Answer For Pin Pad");
-                    return fpm.createTicketResponse(xmlObject);
-                }
-                if (xmlObject.invoiceByNumber == true) {
-
-                    logger.info("Creating a Ticket Balance Response For Pin Pad");
-                    return fpm.createTicketBalanceResponse(xmlObject.balance);
-
-                }
-                if (xmlObject.paymentResponse == true) {
-
-                    //exit because pin pad does care about this response right now it sends a request later.
-                    throw new Error("Abort Promise Chain");
-
-                }
-
-
-            })
-            .then(function (xml) {
-
-
-                tXml = xml;
-                logger.info("Calculating Lrc");
-                return fpm.calculateLRC(tXml);
-
-            })
-            .then(function (lrc) {
-
-                logger.info("Appending special chars to Xml");
-                return String.fromCharCode(2) + tXml.toString()
-                    + String.fromCharCode(3) + lrc + String.fromCharCode(4);
-
-            })
-            .then(function (xmlToSendWithSpecialChars) {
-
-                //find the pin pad that sent the message.
-                clientList.forEach(function (pinPad) {
-
-                    if (pinPad.remoteAddress === deviceID) {
-
-
-                        logger.info("Sending data to Pin Pid @: " + deviceID + "\n\n");
-                        uti.sendTicketResponseXmlToFPPinPad(xmlToSendWithSpecialChars, pinPad);
-
-                    }
-
-
-                });
-
-                return "***File Watcher Function Chain Completed***";
-
-            })
-            .then(function (msg) {
-
-                logger.info(msg);
-
-
-            })
-            .then(function () {
-                logger.info("Deleting processed file from Md Int folder.");
-                uti.deleteProcessedAnswerFile(path);
-            })
-            .catch(function (err) {
-
-                if (err.message === "Abort Promise Chain") {
-
-                    logger.info("Bypassing unneeded payment response from maitre'd");
-                    logger.info("Deleting processed file from Md Int folder.");
-                    uti.deleteProcessedAnswerFile(path);
-
-                } else {
-
-                    logger.error(err);
-
-                }
-
-
-            });
-
-
-    }
-
-
-});
-
-
-var server = net.createServer({allowHalfOpen: true}, function (socket) {
-//Encode in plain text
+var server = net.createServer({ allowHalfOpen: true }, function (socket) {
+    //Encode in plain text
     socket.setEncoding("utf8");
-    //socket.setKeepAlive(true, 500);
+    
 
     //Log the clients Ip
     clientIp = socket.remoteAddress;
@@ -237,7 +108,55 @@ var server = net.createServer({allowHalfOpen: true}, function (socket) {
 
         socket.write("\6");
         logger.info("Sent Ack message to pin pad");
-
+        
+        
+        //Data if From Pixel.  Need to Parse.
+        if((data.indexOf("<Response>") !== -1) && (data.indexOf("<TypeOfRequest>1</TypeOfRequest>") !== -1))
+        {
+            
+            
+            
+            
+        }
+        
+        if((data.indexOf("<Response>") !== -1) && (data.indexOf("<TypeOfRequest>2</TypeOfRequest>") !== -1))
+        {
+            
+            
+            
+            
+        }
+        
+        
+        if((data.indexOf("<Response>") !== -1) && (data.indexOf("<TypeOfRequest>3</TypeOfRequest>") !== -1))
+        {
+            
+            
+            
+            
+        }
+        
+        if((data.indexOf("<Response>") !== -1) && (data.indexOf("<TypeOfRequest>4</TypeOfRequest>") !== -1))
+        {
+            
+            
+            
+            
+        }
+        
+        if((data.indexOf("<Response>") !== -1) && (data.indexOf("<TypeOfRequest>5</TypeOfRequest>") !== -1))
+        {
+            
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        //Data is from Pin pad so need to parse.
         if (data.indexOf("<ServerId>") === -1 && data.indexOf("<TicketRequest>") > -1) {
 
             //tell the pin pad server Id wasn't entered
@@ -274,7 +193,7 @@ var server = net.createServer({allowHalfOpen: true}, function (socket) {
             uti.logIncomingConnection(data, socket)
                 .then(function () {
 
-                    return uti.cleanSpecialChars(data)
+                    return uti.cleanSpecialChars(data);
 
                 })
                 .then(function (cleanData) {
@@ -287,14 +206,14 @@ var server = net.createServer({allowHalfOpen: true}, function (socket) {
                 })
                 .then(function (requestType) {
 
-                    if (requestType === fpRequestType.TicketRequest) {
+                    if (requestType === RequestType.FPTicketRequest) {
 
                         logger.info("Parsing a ticket request");
-                        return uti.parseTicketRequest(cData, clientIp);
+                        return uti.SendTicketRequestToPixel(cData, clientIp);
 
                     }
 
-                    if (requestType === fpRequestType.PurchaseResponse) {
+                    if (requestType === RequestType.FPPurchaseResponse) {
 
 
                         logger.info("Parsing a purchase response request");
@@ -302,7 +221,7 @@ var server = net.createServer({allowHalfOpen: true}, function (socket) {
 
 
                     }
-                    if (requestType === fpRequestType.TicketBalanceRequest) {
+                    if (requestType === RequestType.FPTicketBalanceRequest) {
 
                         logger.info("Parsing a ticket balance request");
                         return uti.parseTicketBalanceRequest(cData, clientIp);

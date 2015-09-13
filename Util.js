@@ -13,7 +13,8 @@ storage.initSync();
 var ss = require("./literals/SystemSettings");
 var cl = require("./literals/CardLanguage");
 var ct = require("./literals/CardType");
-var fpReqType = require("./literals/FpRequestType");
+var fpReqType = require("./literals/RequestType");
+var logger;
 
 
 if (process.argv[2] === "noLogging") {
@@ -67,7 +68,7 @@ function cleanSpecialChars(xmlRawDataToClean) {
 
 }
 
-function parseTicketRequest(dataFromPinPad, clientIP) {
+function SendTicketRequestToPixel(dataFromPinPad, clientIP) {
 
 
     var result = new XmlDoc(dataFromPinPad);
@@ -208,20 +209,20 @@ function parseTicketBalanceRequest(dataFromPinPad, clientIP) {
 function getFpRequestType(dataFromPinPad) {
 
 
-    if (dataFromPinPad.indexOf(fpReqType.TicketRequest) !== -1) {
+    if (dataFromPinPad.indexOf(fpReqType.FPTicketRequest) !== -1) {
 
-        return fpReqType.TicketRequest;
+        return fpReqType.FPTicketRequest;
     }
 
-    if (dataFromPinPad.indexOf(fpReqType.PurchaseResponse) !== -1) {
+    if (dataFromPinPad.indexOf(fpReqType.FPPurchaseResponse) !== -1) {
 
-        return fpReqType.PurchaseResponse;
+        return fpReqType.FPPurchaseResponse;
     }
 
 
-    if (dataFromPinPad.indexOf(fpReqType.TicketBalanceRequest) !== -1) {
+    if (dataFromPinPad.indexOf(fpReqType.FPTicketBalanceRequest) !== -1) {
 
-        return fpReqType.TicketBalanceRequest;
+        return fpReqType.FPTicketBalanceRequest;
 
     }
 
@@ -620,7 +621,7 @@ module.exports = {
     logIncomingConnection: logIncomingConnection,
     getCurrentRequestIndex: getCurrentRequestIndex,
     deleteProcessedAnswerFile: deleteProcessedAnswerFile,
-    parseTicketRequest: parseTicketRequest,
+    SendTicketRequestToPixel: SendTicketRequestToPixel,
     parsePurchaseResponse: parsePurchaseResponse,
     parseTicketBalanceRequest: parseTicketBalanceRequest,
     licenseIsValid: licenseIsValid
