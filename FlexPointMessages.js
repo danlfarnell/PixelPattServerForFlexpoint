@@ -1,7 +1,8 @@
 // JavaScript source code
 "use strict";
-var xmlWriter = require('xml-writer');
+var XmlWriter = require('xml-writer');
 var Promise = require("bluebird");
+
 
 
 
@@ -15,7 +16,7 @@ function createTicketResponse(data) {
 
 
 
-    var xw = new xmlWriter(true);
+    var xw = new XmlWriter(true);
 
 
     xw.startElement("TicketResponse");
@@ -86,7 +87,7 @@ function createTicketResponse(data) {
 function createTicketResponseError(errorFromPos) {
 
 
-    var xw = new xmlWriter(true);
+    var xw = new XmlWriter(true);
 
 
     xw.startElement("TicketResponse");
@@ -103,7 +104,7 @@ function createTicketResponseError(errorFromPos) {
 
 function createTicketBalanceResponseError(errorFromPos) {
 
-    var xw = new xmlWriter(true);
+    var xw = new XmlWriter(true);
 
 
     xw.startElement("TicketBalanceResponse");
@@ -127,7 +128,7 @@ function createTicketBalanceResponseError(errorFromPos) {
 function createTicketResponseForNotMatchingTicket() {
 
 
-    var xw = new xmlWriter(true);
+    var xw = new XmlWriter(true);
 
     xw.startElement("TicketResponse");
     xw.startElement("Count");
@@ -209,7 +210,7 @@ function addSpecialCharactersToXml(xml) {
 function createTicketBalanceResponse(balance) {
 
 
-    var xw = new xmlWriter(true);
+    var xw = new XmlWriter(true);
 
 
     xw.startElement("TicketBalanceResponse");
